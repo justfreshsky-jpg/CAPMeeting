@@ -1,0 +1,42 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app.py'
+      - 'requirements.txt'
+      - 'Dockerfile'
+      - 'templates/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud (Workload Identity Federation)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.WIF_PROVIDER }}
+          service_account: ${{ vars.WIF_SERVICE_ACCOUNT }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy capmeeting \
+            --source . \
+            --region us-central1 \
+            --allow-unauthenticated \
+            --min-instances=0 \
+            --max-instances=5 \
+            --cpu-throttling \
+            --quiet

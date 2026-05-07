@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CAPMeeting — Civil Air Patrol squadron meeting agenda builder</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Free squadron meeting agenda builder for CAP commanders. Tell it the date, attendance, and current focus; get a complete 90-min agenda with safety briefing, AE moment, drill plan, and character topic.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://capmeeting.freshskyai.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="CAPMeeting — Squadron meeting agenda builder">
+  <meta property="og:description" content="Free squadron meeting agenda builder for CAP commanders. Get a complete 90-min agenda from a few inputs.">
+  <meta property="og:url" content="https://capmeeting.freshskyai.com/">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E📋%3C/text%3E%3C/svg%3E">
+  <style>
+    :root {
+      --fg:#0f172a; --bg:#f8fafc; --card:#fff; --accent:#1e3a8a; --accent-hover:#1e40af;
+      --gold:#fbbf24; --border:#e2e8f0; --muted:#475569;
+    }
+    * { box-sizing:border-box; }
+    body { font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif; background:var(--bg); color:var(--fg); margin:0; padding:0; line-height:1.55; }
+    .topbar { background:#0f172a; color:#f1f5f9; padding:12px 18px; display:flex; justify-content:space-between; align-items:center; font-size:14px; border-bottom:3px solid var(--gold); }
+    .topbar a { color:var(--gold); text-decoration:none; font-weight:600; }
+    header { text-align:center; padding:36px 20px 20px; }
+    header h1 { margin:0; font-size:30px; letter-spacing:-0.01em; }
+    header .tag { display:inline-block; background:#dbeafe; color:var(--accent); font-size:12px; font-weight:700; padding:4px 10px; border-radius:99px; margin-bottom:10px; letter-spacing:0.05em; text-transform:uppercase; }
+    header p { color:var(--muted); max-width:680px; margin:14px auto 0; font-size:16px; }
+    main { max-width:860px; margin:0 auto; padding:14px 16px 80px; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:24px; margin-bottom:18px; box-shadow:0 1px 3px rgba(0,0,0,.04); }
+    .card h2 { margin:0 0 8px; font-size:19px; }
+    .card .sub { font-size:13px; color:var(--muted); margin-bottom:14px; }
+    label { display:block; font-weight:600; margin-bottom:8px; font-size:14px; }
+    select, input, textarea { width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:8px; font:inherit; font-size:14.5px; background:#fff; }
+    textarea { min-height:78px; resize:vertical; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; }
+    .grid .full { grid-column:1/-1; }
+    button { font:inherit; cursor:pointer; border-radius:10px; padding:11px 18px; font-weight:600; border:none; }
+    button.primary { background:var(--accent); color:#fff; padding:13px 22px; font-size:15px; }
+    button.primary:hover { background:var(--accent-hover); }
+    button.primary:disabled { opacity:.55; cursor:not-allowed; }
+    .error { color:#991b1b; background:#fef2f2; padding:12px; border-radius:8px; margin-top:12px; display:none; border:1px solid #fecaca; }
+    .error.shown { display:block; }
+    .spin { display:inline-block; width:14px; height:14px; border:2px solid #fff; border-top-color:transparent; border-radius:50%; animation:s 0.8s linear infinite; margin-right:8px; vertical-align:-2px; }
+    @keyframes s { to { transform:rotate(360deg); } }
+
+    #out { display:none; }
+    #out.shown { display:block; }
+    .blocks-list { display:flex; flex-direction:column; gap:14px; margin-top:14px; }
+    .block { display:grid; grid-template-columns:80px 1fr; gap:14px; padding:14px; border:1px solid var(--border); border-radius:10px; background:#fafaf9; }
+    .block .time { font-weight:700; color:var(--accent); font-size:14px; }
+    .block .time small { display:block; color:var(--muted); font-weight:400; font-size:12px; margin-top:2px; }
+    .block .body h4 { margin:0 0 4px; font-size:15.5px; }
+    .block .body .leader { font-size:12.5px; color:var(--muted); margin-bottom:6px; }
+    .block .body .content { font-size:14.5px; line-height:1.55; }
+    .block .body .notes { font-size:13px; color:var(--muted); margin-top:6px; font-style:italic; }
+    .topic-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; margin-top:18px; }
+    .topic-card { background:#fffbeb; border:1px solid #fde68a; border-radius:10px; padding:14px; }
+    .topic-card h4 { margin:0 0 6px; font-size:14px; color:#92400e; text-transform:uppercase; letter-spacing:0.04em; }
+    .topic-card .body { font-size:14px; line-height:1.55; }
+    .business { margin-top:18px; }
+    .business h4 { margin:0 0 8px; font-size:14.5px; }
+    .business ul { margin:0; padding-left:20px; }
+    .supplies { margin-top:14px; padding:12px 14px; background:#f1f5f9; border-radius:8px; font-size:13.5px; }
+    .supplies strong { color:var(--accent); display:block; margin-bottom:4px; }
+
+    @media print {
+      .topbar, .input-card, button, footer { display:none !important; }
+      body { background:#fff; }
+      #out { display:block !important; }
+    }
+
+    footer { border-top:1px solid var(--border); margin-top:40px; padding:24px 20px; text-align:center; font-size:12.5px; color:var(--muted); line-height:1.7; }
+    footer a { color:#475569; text-decoration:underline; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <span><strong>📋 CAPMeeting</strong> &middot; Squadron meeting agenda builder · Free</span>
+    <a href="https://cap.freshskyai.com/" target="_blank" rel="noopener">More CAP tools →</a>
+  </div>
+
+  <header>
+    <span class="tag">90-min squadron meeting · for cadet + composite squadrons</span>
+    <h1>Build the agenda in 30 seconds.</h1>
+    <p>Tell it your meeting date, who's attending, and what you're working toward. Get back a complete 90-minute agenda with safety briefing, AE moment, drill objectives, character topic, and squadron business items — all calibrated to your specific squadron context.</p>
+  </header>
+
+  <main>
+    <div class="card input-card">
+      <h2>Meeting context</h2>
+      <p class="sub">Spend 30 seconds on the inputs; save 30-45 minutes of weekly prep.</p>
+
+      <div class="grid">
+        <div>
+          <label for="date">Meeting date</label>
+          <input type="date" id="date">
+        </div>
+        <div>
+          <label for="cadets">Cadets attending</label>
+          <input type="number" id="cadets" min="0" value="12" step="1">
+        </div>
+        <div>
+          <label for="seniors">Senior members attending</label>
+          <input type="number" id="seniors" min="0" value="6" step="1">
+        </div>
+        <div>
+          <label for="skill_mix">Cadet skill mix</label>
+          <select id="skill_mix">
+            <option value="mostly new">Mostly new (Curry / Arnold)</option>
+            <option value="mixed" selected>Mixed (Curry through Mitchell)</option>
+            <option value="mostly experienced">Mostly experienced (Mitchell+)</option>
+            <option value="cadet officers">Mostly cadet officers (Phase 3+)</option>
+          </select>
+        </div>
+        <div>
+          <label for="minutes">Total meeting length</label>
+          <select id="minutes">
+            <option value="60">60 minutes</option>
+            <option value="90" selected>90 minutes</option>
+            <option value="120">120 minutes</option>
+          </select>
+        </div>
+        <div class="full">
+          <label for="focus">Current focus area / upcoming activity</label>
+          <input type="text" id="focus" placeholder="e.g., SAREX prep next month, encampment promotion drive, DDR week, post-encampment recovery">
+        </div>
+        <div class="full">
+          <label for="extra">Special considerations (optional)</label>
+          <textarea id="extra" placeholder="Anything specific to address: a recent safety incident, upcoming inspection, low cadet retention, new senior member onboarding, etc."></textarea>
+        </div>
+      </div>
+
+      <button class="primary" id="goBtn" type="button" style="margin-top:14px;">Build agenda</button>
+      <div class="error" id="err"></div>
+    </div>
+
+    <div class="card" id="out" aria-live="polite">
+      <h2 style="display:flex;align-items:center;justify-content:space-between;">
+        <span id="meetingTitle">Agenda</span>
+        <button type="button" onclick="window.print()" style="font-size:12.5px;padding:6px 14px;background:#fff;color:var(--accent);border:1px solid var(--border);">🖨 Print</button>
+      </h2>
+      <div id="agendaBody"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Built under the <a href="https://www.freshskyai.com/#hulec" target="_blank" rel="noopener">HULEC rule</a>. Part of <a href="https://cap.freshskyai.com/" target="_blank" rel="noopener">Fresh Sky AI for Civil Air Patrol</a> — free, volunteer-built, no contract.</p>
+    <p>Agendas are AI-generated drafts. The squadron commander is responsible for reviewing content and adapting to local guidance. Not affiliated with Civil Air Patrol or CAP NHQ.</p>
+  </footer>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const goBtn = $('goBtn');
+  const err = $('err');
+  const out = $('out');
+  const body = $('agendaBody');
+  const meetingTitle = $('meetingTitle');
+
+  // Default to next Tuesday (typical squadron meeting night, varies by squadron)
+  const d = new Date();
+  d.setDate(d.getDate() + ((9 - d.getDay()) % 7 || 7)); // next Tuesday
+  $('date').value = d.toISOString().slice(0, 10);
+
+  function showErr(m) { err.textContent = m; err.classList.add('shown'); }
+  function clearErr() { err.classList.remove('shown'); }
+
+  goBtn.onclick = async () => {
+    clearErr();
+    const payload = {
+      date: $('date').value,
+      cadets: parseInt($('cadets').value || '0', 10),
+      seniors: parseInt($('seniors').value || '0', 10),
+      skill_mix: $('skill_mix').value,
+      focus: $('focus').value,
+      extra: $('extra').value,
+      minutes: parseInt($('minutes').value || '90', 10),
+    };
+    if (!payload.date) { showErr('Pick a meeting date.'); return; }
+    goBtn.disabled = true;
+    goBtn.innerHTML = '<span class="spin"></span>Building agenda…';
+    try {
+      const r = await fetch('/api/build', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const j = await r.json();
+      if (!r.ok) { showErr(j.error || 'Server error.'); return; }
+      render(j.agenda || {});
+      out.classList.add('shown');
+      out.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (e) {
+      showErr('Network error: ' + (e.message || e));
+    } finally {
+      goBtn.disabled = false;
+      goBtn.textContent = 'Build agenda';
+    }
+  };
+
+  function render(a) {
+    meetingTitle.textContent = a.meeting_title || 'Squadron Meeting Agenda';
+    let runningMinutes = 0;
+    const blocksHtml = (a.blocks || []).map(b => {
+      const start = formatRunning(runningMinutes);
+      runningMinutes += (b.minutes || 0);
+      const end = formatRunning(runningMinutes);
+      return `
+        <div class="block">
+          <div class="time">${esc(b.minutes)} min<small>${start}–${end}</small></div>
+          <div class="body">
+            <h4>${esc(b.name || '')}</h4>
+            ${b.leader ? `<div class="leader">Led by: ${esc(b.leader)}</div>` : ''}
+            <div class="content">${esc(b.content || '').replace(/\n/g, '<br>')}</div>
+            ${b.notes ? `<div class="notes">Note: ${esc(b.notes)}</div>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    const topicsHtml = `
+      <div class="topic-cards">
+        ${a.safety_topic ? card('🦺 Safety Topic', a.safety_topic) : ''}
+        ${a.ae_moment ? card('🚀 Aerospace Moment', a.ae_moment) : ''}
+        ${a.drill_focus ? card('🎖 Drill Focus', a.drill_focus) : ''}
+        ${a.character_topic ? card('🧭 Character / Leadership', a.character_topic) : ''}
+      </div>
+    `;
+
+    const businessHtml = (a.business_items || []).length
+      ? `<div class="business"><h4>📌 Squadron Business / Training Block — suggested items</h4><ul>${(a.business_items).map(i => `<li>${esc(i)}</li>`).join('')}</ul></div>`
+      : '';
+    const suppliesHtml = (a.supplies_needed || []).length
+      ? `<div class="supplies"><strong>Supplies / materials needed:</strong>${(a.supplies_needed).map(esc).join(' · ')}</div>`
+      : '';
+
+    body.innerHTML = `
+      <div class="blocks-list">${blocksHtml}</div>
+      ${topicsHtml}
+      ${businessHtml}
+      ${suppliesHtml}
+    `;
+  }
+
+  function card(title, content) {
+    return `<div class="topic-card"><h4>${title}</h4><div class="body">${esc(content)}</div></div>`;
+  }
+
+  function formatRunning(min) {
+    const h = Math.floor(min / 60);
+    const m = min % 60;
+    return `+${h}:${m.toString().padStart(2, '0')}`;
+  }
+
+  function esc(s) {
+    if (s == null) return '';
+    return String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+})();
+</script>
+</body>
+</html>
