@@ -125,12 +125,39 @@ def _llm_via_huggingface(system, user):
     return r.json()['choices'][0]['message']['content']
 
 
+def _llm_via_sambanova(system, user):
+    key = os.environ.get('SAMBANOVA_KEY', '')
+    if not key: return None
+    r = requests.post('https://api.sambanova.ai/v1/chat/completions',
+        headers={'Authorization': f'Bearer {key}'},
+        json={'model': os.environ.get('SAMBANOVA_MODEL', 'Meta-Llama-3.3-70B-Instruct'),
+              'messages': [{'role':'system','content':system}, {'role':'user','content':user}], 'temperature': 0.4},
+        timeout=_HTTP_TIMEOUT)
+    r.raise_for_status()
+    return r.json()['choices'][0]['message']['content']
+
+
+def _llm_via_cloudflare(system, user):
+    key = os.environ.get('CLOUDFLARE_AI_TOKEN', '')
+    acct = os.environ.get('CLOUDFLARE_ACCOUNT_ID', '')
+    if not key or not acct: return None
+    model = os.environ.get('CLOUDFLARE_MODEL', '@cf/meta/llama-3.3-70b-instruct-fp8-fast')
+    r = requests.post(f'https://api.cloudflare.com/client/v4/accounts/{acct}/ai/run/{model}',
+        headers={'Authorization': f'Bearer {key}'},
+        json={'messages': [{'role':'system','content':system}, {'role':'user','content':user}], 'temperature': 0.4},
+        timeout=_HTTP_TIMEOUT)
+    r.raise_for_status()
+    j = r.json()
+    return j.get('result', {}).get('response') or j.get('result', {}).get('output') or ''
+
 _PROVIDERS = [
     ('groq', _llm_via_groq),
     ('cerebras', _llm_via_cerebras),
     ('gemini', _llm_via_gemini),
     ('mistral', _llm_via_mistral),
     ('huggingface', _llm_via_huggingface),
+    ('sambanova', _llm_via_sambanova),
+    ('cloudflare', _llm_via_cloudflare),
 ]
 
 
