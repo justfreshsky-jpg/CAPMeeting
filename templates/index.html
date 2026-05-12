@@ -72,6 +72,60 @@
     footer { border-top:1px solid var(--border); margin-top:40px; padding:24px 20px; text-align:center; font-size:12.5px; color:var(--muted); line-height:1.7; }
     footer a { color:#475569; text-decoration:underline; }
   </style>
+<style id="fs-portfolio-skin">
+/* Fresh Sky AI portfolio skin — futuristic dark theme overlay. Injected
+   via freshsky_common.revenue.og_snippet so every batch app picks it up
+   without per-app template edits. Overrides via CSS specificity. */
+:root{--fs-bg:#06091a;--fs-fg:#e2e8f0;--fs-mute:#94a3b8;--fs-card:rgba(255,255,255,0.04);--fs-border:rgba(255,255,255,0.08);--fs-accent:#6366f1;--fs-accent2:#8b5cf6;--fs-accent3:#22d3ee}
+html,body{background:var(--fs-bg)!important;color:var(--fs-fg)!important}
+body{background-image:radial-gradient(at 15% 8%,rgba(99,102,241,0.10) 0%,transparent 45%),radial-gradient(at 85% 30%,rgba(6,182,212,0.08) 0%,transparent 45%),radial-gradient(at 50% 95%,rgba(139,92,246,0.10) 0%,transparent 45%)!important}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");opacity:0.025;pointer-events:none;z-index:9997;mix-blend-mode:overlay}
+/* Nav / brand */
+.nav,.topbar,nav,.fs-nav{background:rgba(6,9,26,0.78)!important;-webkit-backdrop-filter:blur(16px) saturate(180%);backdrop-filter:blur(16px) saturate(180%);border-bottom:1px solid var(--fs-border)!important;color:var(--fs-fg)!important}
+.nav a,nav a,.brand,.fs-nav a{color:var(--fs-fg)!important}
+.nav a.brand,nav a.brand,.brand,.fs-nav .brand{color:#fff!important;font-weight:700}
+/* Hero */
+header,.hero,.fs-hero{background:transparent!important;color:var(--fs-fg)!important;position:relative}
+.hero h1,header h1,.fs-hero h1{color:#fff!important;background:linear-gradient(135deg,#fff 0%,#c7d2fe 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero p,header p,.fs-hero p,.sub,.hero-desc{color:var(--fs-mute)!important}
+.hero-pills,.fs-hero-badges,.hero-badges{margin-top:14px}
+.pill,.fs-hero-pill,.badge-pill,.hero-pill,.badge{background:rgba(255,255,255,0.06)!important;color:var(--fs-fg)!important;border:1px solid var(--fs-border)!important;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+/* Cards */
+.card,.tool,.feature-card,.step-card,main section,.landing-section{background:var(--fs-card)!important;border:1px solid var(--fs-border)!important;color:var(--fs-fg)!important;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-radius:14px!important}
+.card h1,.card h2,.card h3,.tool h2,.tool h3{color:#fff!important}
+.tool h2,.tool h3,.feature-card h3,.step-card h3,.section-title{color:#fff!important}
+.muted,.hint,.section-subtitle,.note{color:var(--fs-mute)!important}
+/* Inputs */
+input,textarea,select,.input{background:rgba(255,255,255,0.05)!important;color:var(--fs-fg)!important;border:1px solid var(--fs-border)!important}
+input:focus,textarea:focus,select:focus,.input:focus{outline:2px solid var(--fs-accent)!important;border-color:var(--fs-accent)!important;background:rgba(255,255,255,0.07)!important}
+input::placeholder,textarea::placeholder{color:#64748b!important}
+/* Buttons */
+.btn,.btn-primary,button.primary,.landing-cta,button[type=submit]{background:linear-gradient(135deg,var(--fs-accent) 0%,var(--fs-accent2) 100%)!important;color:#fff!important;border:none!important;box-shadow:0 4px 20px rgba(99,102,241,0.3)!important;border-radius:10px!important;font-weight:600!important;transition:transform .15s,box-shadow .15s!important}
+.btn:hover,.btn-primary:hover,button.primary:hover,.landing-cta:hover{transform:translateY(-2px)!important;box-shadow:0 8px 28px rgba(99,102,241,0.5),0 0 32px rgba(139,92,246,0.3)!important}
+.btn:disabled,.btn-primary:disabled,button:disabled{opacity:.5!important;cursor:not-allowed!important;transform:none!important}
+/* Output / result */
+.output,.result,.result-box,pre{background:rgba(255,255,255,0.03)!important;color:var(--fs-fg)!important;border:1px solid var(--fs-border)!important;border-radius:10px!important}
+.output.error,.result-box.error{background:rgba(239,68,68,0.08)!important;border-color:rgba(239,68,68,0.3)!important;color:#fca5a5!important}
+/* Footer */
+footer,.foot,.footer{background:rgba(0,0,0,0.3)!important;border-top:1px solid var(--fs-border)!important;color:var(--fs-mute)!important}
+footer a,.foot a,.footer a{color:var(--fs-fg)!important}
+/* Tables */
+table th{background:rgba(99,102,241,0.15)!important;color:#fff!important}
+table td{color:var(--fs-fg)!important;border-color:var(--fs-border)!important}
+table tr:hover td{background:rgba(255,255,255,0.04)!important}
+/* Links */
+a{color:#a78bfa}
+a:hover{color:#c4b5fd}
+.disclaimer,.cta-footnote{color:var(--fs-mute)!important}
+/* Tabs (EduSafeAI-style) */
+.tabs button{background:rgba(255,255,255,0.04)!important;color:var(--fs-fg)!important;border:1px solid var(--fs-border)!important}
+.tabs button.active{background:linear-gradient(135deg,var(--fs-accent),var(--fs-accent2))!important;color:#fff!important;border-color:transparent!important}
+/* Stats strip */
+.landing-stats-strip,.stats-row{background:rgba(255,255,255,0.04)!important;border:1px solid var(--fs-border)!important;border-radius:14px!important}
+.landing-stat-num,.stat-num{color:#fff!important}
+/* Feature tags / category badges */
+.feature-tag,.cat-badge,.tag{background:rgba(99,102,241,0.15)!important;color:#a5b4fc!important;border:1px solid rgba(99,102,241,0.25)!important}
+</style>
 </head>
 <body>
   <div class="topbar">
