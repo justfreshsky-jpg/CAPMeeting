@@ -150,15 +150,16 @@ def _llm_via_cloudflare(system, user):
     j = r.json()
     return j.get('result', {}).get('response') or j.get('result', {}).get('output') or ''
 
-_PROVIDERS = [
-    ('groq', _llm_via_groq),
-    ('cerebras', _llm_via_cerebras),
-    ('gemini', _llm_via_gemini),
-    ('mistral', _llm_via_mistral),
-    ('huggingface', _llm_via_huggingface),
-    ('sambanova', _llm_via_sambanova),
-    ('cloudflare', _llm_via_cloudflare),
-]
+from freshsky_common.llm import LLMChain  # noqa: E402
+
+_SHARED_LLM = LLMChain()
+
+
+def _llm_via_shared_chain(system, user):
+    return _SHARED_LLM.complete(system=system, user=user) or None
+
+
+_PROVIDERS = [('shared', _llm_via_shared_chain)]
 
 
 def _llm(system: str, user: str) -> str:
