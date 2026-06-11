@@ -30,6 +30,21 @@ jobs:
       - name: Set up gcloud
         uses: google-github-actions/setup-gcloud@v2
 
+      - name: Enforce Cloud Run budget lock
+        run: |
+          if ! lock="$(gcloud secrets versions access latest --secret=cloud-run-budget-lock 2>/dev/null)"; then
+            if gcloud secrets describe cloud-run-budget-lock >/dev/null 2>&1; then
+              echo '::error::Cloud Run budget lock exists but could not be read.'
+              exit 1
+            fi
+            echo '::warning::Cloud Run budget lock is not configured yet.'
+            lock="open"
+          fi
+          if [[ "$lock" == locked:* ]]; then
+            echo '::error::Cloud Run deployments are locked because monthly Cloud Run spend reached the $20 hard limit.'
+            exit 1
+          fi
+
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy capmeeting \

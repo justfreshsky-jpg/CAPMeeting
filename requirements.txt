@@ -2,4 +2,4 @@ flask==3.1.1
 gunicorn==23.0.0
 requests==2.32.3
 urllib3==2.6.3
-freshsky-common @ git+https://github.com/justfreshsky-jpg/freshsky-common.git@cac087a8c143f71e255d76cb9d85b4dc74ad6b10
+freshsky-common @ git+https://github.com/justfreshsky-jpg/freshsky-common.git@0dc4a414a94e407535ebfc176bc2178184e1c532
