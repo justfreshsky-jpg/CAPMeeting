@@ -41,7 +41,7 @@ jobs:
             lock="open"
           fi
           if [[ "$lock" == locked:* ]]; then
-            echo '::error::Cloud Run deployments are locked because monthly Cloud Run spend reached the $20 hard limit.'
+            echo '::error::Cloud Run deployments are locked because monthly Cloud Run spend reached the $10 hard limit.'
             exit 1
           fi
 
