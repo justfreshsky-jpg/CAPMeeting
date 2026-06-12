@@ -150,9 +150,10 @@ def _llm_via_cloudflare(system, user):
     j = r.json()
     return j.get('result', {}).get('response') or j.get('result', {}).get('output') or ''
 
-from freshsky_common.llm import LLMChain  # noqa: E402
+from freshsky_common.llm import LLMChain, install_provider_metrics  # noqa: E402
 
 _SHARED_LLM = LLMChain()
+install_provider_metrics(app)
 
 
 def _llm_via_shared_chain(system, user):
