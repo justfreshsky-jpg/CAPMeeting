@@ -19,7 +19,6 @@ import os
 import re
 import threading
 
-import requests
 from flask import Response, Flask, jsonify, render_template, request
 
 app = Flask(__name__)
@@ -57,102 +56,11 @@ def _security_headers(resp):
     return resp
 
 
-_HTTP_TIMEOUT = 35
-
-
-def _llm_via_groq(system, user):
-    key = os.environ.get('GROQ_KEY', '')
-    if not key: return None
-    r = requests.post('https://api.groq.com/openai/v1/chat/completions',
-        headers={'Authorization': f'Bearer {key}'},
-        json={'model': os.environ.get('GROQ_MODEL', 'llama-3.3-70b-versatile'),
-              'messages': [{'role':'system','content':system}, {'role':'user','content':user}],
-              'temperature': 0.5, 'response_format': {'type': 'json_object'}},
-        timeout=_HTTP_TIMEOUT)
-    r.raise_for_status()
-    return r.json()['choices'][0]['message']['content']
-
-
-def _llm_via_cerebras(system, user):
-    key = os.environ.get('CEREBRAS_KEY', '')
-    if not key: return None
-    r = requests.post('https://api.cerebras.ai/v1/chat/completions',
-        headers={'Authorization': f'Bearer {key}'},
-        json={'model': os.environ.get('CEREBRAS_MODEL', 'llama-3.3-70b'),
-              'messages': [{'role':'system','content':system}, {'role':'user','content':user}],
-              'temperature': 0.5},
-        timeout=_HTTP_TIMEOUT)
-    r.raise_for_status()
-    return r.json()['choices'][0]['message']['content']
-
-
-def _llm_via_gemini(system, user):
-    key = os.environ.get('GEMINI_KEY', '')
-    if not key: return None
-    r = requests.post(f'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={key}',
-        headers={'Content-Type':'application/json'},
-        json={'system_instruction':{'parts':[{'text':system}]},
-              'contents':[{'role':'user','parts':[{'text':user}]}],
-              'generationConfig':{'temperature':0.5, 'responseMimeType':'application/json'}},
-        timeout=_HTTP_TIMEOUT)
-    r.raise_for_status()
-    return r.json()['candidates'][0]['content']['parts'][0]['text']
-
-
-def _llm_via_mistral(system, user):
-    key = os.environ.get('MISTRAL_KEY', '')
-    if not key: return None
-    r = requests.post('https://api.mistral.ai/v1/chat/completions',
-        headers={'Authorization': f'Bearer {key}'},
-        json={'model': os.environ.get('MISTRAL_MODEL', 'mistral-small-latest'),
-              'messages': [{'role':'system','content':system}, {'role':'user','content':user}],
-              'temperature': 0.5, 'response_format': {'type': 'json_object'}},
-        timeout=_HTTP_TIMEOUT)
-    r.raise_for_status()
-    return r.json()['choices'][0]['message']['content']
-
-
-def _llm_via_huggingface(system, user):
-    key = os.environ.get('HF_KEY', '')
-    if not key: return None
-    r = requests.post('https://router.huggingface.co/v1/chat/completions',
-        headers={'Authorization': f'Bearer {key}'},
-        json={'model': os.environ.get('HF_MODEL', 'meta-llama/Llama-3.3-70B-Instruct'),
-              'messages': [{'role':'system','content':system}, {'role':'user','content':user}],
-              'temperature': 0.5},
-        timeout=_HTTP_TIMEOUT)
-    r.raise_for_status()
-    return r.json()['choices'][0]['message']['content']
-
-
-def _llm_via_sambanova(system, user):
-    key = os.environ.get('SAMBANOVA_KEY', '')
-    if not key: return None
-    r = requests.post('https://api.sambanova.ai/v1/chat/completions',
-        headers={'Authorization': f'Bearer {key}'},
-        json={'model': os.environ.get('SAMBANOVA_MODEL', 'Meta-Llama-3.3-70B-Instruct'),
-              'messages': [{'role':'system','content':system}, {'role':'user','content':user}], 'temperature': 0.4},
-        timeout=_HTTP_TIMEOUT)
-    r.raise_for_status()
-    return r.json()['choices'][0]['message']['content']
-
-
-def _llm_via_cloudflare(system, user):
-    key = os.environ.get('CLOUDFLARE_AI_TOKEN', '')
-    acct = os.environ.get('CLOUDFLARE_ACCOUNT_ID', '')
-    if not key or not acct: return None
-    model = os.environ.get('CLOUDFLARE_MODEL', '@cf/meta/llama-3.3-70b-instruct-fp8-fast')
-    r = requests.post(f'https://api.cloudflare.com/client/v4/accounts/{acct}/ai/run/{model}',
-        headers={'Authorization': f'Bearer {key}'},
-        json={'messages': [{'role':'system','content':system}, {'role':'user','content':user}], 'temperature': 0.4},
-        timeout=_HTTP_TIMEOUT)
-    r.raise_for_status()
-    j = r.json()
-    return j.get('result', {}).get('response') or j.get('result', {}).get('output') or ''
+# Provider calls are centralized in the privacy-restricted shared chain.
 
 from freshsky_common.llm import LLMChain, install_provider_metrics  # noqa: E402
 
-_SHARED_LLM = LLMChain()
+_SHARED_LLM = LLMChain(privacy_profile="us_public")
 install_provider_metrics(app)
 
 

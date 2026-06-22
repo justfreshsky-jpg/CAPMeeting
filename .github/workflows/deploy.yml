@@ -50,6 +50,7 @@ jobs:
           gcloud run deploy capmeeting \
             --source . \
             --region us-central1 \
+            --update-env-vars=LLM_PRIVACY_PROFILE=us_public \
             --allow-unauthenticated \
             --min-instances=0 \
             --max-instances=5 \
