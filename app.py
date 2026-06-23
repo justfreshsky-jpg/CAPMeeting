@@ -219,7 +219,7 @@ _PRIVACY_HTML = """<!DOCTYPE html>
 <h2>Children</h2>
 <p>Some of our tools (e.g. CAPStudy) are designed to be used by minors aged 12+. We do not collect any personally identifying information from anyone, including minors. Parents/guardians of cadets aged 12-17 may use the tool freely.</p>
 <h2>Contact</h2>
-<p>Questions: <a href="mailto:admin@freshskyllc.com">admin@freshskyllc.com</a>. Operator: Fresh Sky LLC, Somerset County, NJ.</p>
+<p>Questions: <a href="https://www.freshskyai.com/contact">Fresh Sky contact page</a>. Operator: Fresh Sky LLC, Somerset County, NJ.</p>
 </body></html>"""
 
 _TERMS_HTML = """<!DOCTYPE html>
@@ -241,7 +241,7 @@ _TERMS_HTML = """<!DOCTYPE html>
 <h2>Changes</h2>
 <p>We may update or discontinue the tool without notice. If a tool is retired, this URL will redirect or be retired in tandem.</p>
 <h2>Contact</h2>
-<p>Questions: <a href="mailto:admin@freshskyllc.com">admin@freshskyllc.com</a>.</p>
+<p>Questions: <a href="https://www.freshskyai.com/contact">Fresh Sky contact page</a>.</p>
 </body></html>"""
 
 
