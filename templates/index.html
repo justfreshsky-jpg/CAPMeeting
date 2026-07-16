@@ -19,7 +19,7 @@
     }
     * { box-sizing:border-box; }
     body { font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif; background:var(--bg); color:var(--fg); margin:0; padding:0; line-height:1.55; }
-    .topbar { background:#0f172a; color:#f1f5f9; padding:12px 18px; display:flex; justify-content:space-between; align-items:center; font-size:14px; border-bottom:3px solid var(--gold); }
+    .topbar { background:#0f172a; color:#f1f5f9; padding:12px 18px; display:flex; flex-wrap:wrap; gap:8px; justify-content:space-between; align-items:center; font-size:14px; border-bottom:3px solid var(--gold); }
     .topbar a { color:var(--gold); text-decoration:none; font-weight:600; }
     header { text-align:center; padding:36px 20px 20px; }
     header h1 { margin:0; font-size:30px; letter-spacing:-0.01em; }
@@ -38,6 +38,7 @@
     button.primary { background:var(--accent); color:#fff; padding:13px 22px; font-size:15px; }
     button.primary:hover { background:var(--accent-hover); }
     button.primary:disabled { opacity:.55; cursor:not-allowed; }
+    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline:3px solid var(--gold); outline-offset:2px; }
     .error { color:#991b1b; background:#fef2f2; padding:12px; border-radius:8px; margin-top:12px; display:none; border:1px solid #fecaca; }
     .error.shown { display:block; }
     .spin { display:inline-block; width:14px; height:14px; border:2px solid #fff; border-top-color:transparent; border-radius:50%; animation:s 0.8s linear infinite; margin-right:8px; vertical-align:-2px; }
@@ -142,7 +143,7 @@ a:hover{color:#c4b5fd}
   <main>
     <div class="card input-card">
       <h2>Meeting context</h2>
-      <p class="sub">Spend 30 seconds on the inputs; save 30-45 minutes of weekly prep.</p>
+      <p class="sub" id="privacy-note">Use de-identified context only. Do not enter names, CAP member IDs, contact details, street addresses, rosters, or sensitive operational information.</p>
 
       <div class="grid">
         <div>
@@ -151,11 +152,11 @@ a:hover{color:#c4b5fd}
         </div>
         <div>
           <label for="cadets">Cadets attending</label>
-          <input type="number" id="cadets" min="0" value="12" step="1">
+          <input type="number" id="cadets" min="0" max="500" value="12" step="1">
         </div>
         <div>
           <label for="seniors">Senior members attending</label>
-          <input type="number" id="seniors" min="0" value="6" step="1">
+          <input type="number" id="seniors" min="0" max="500" value="6" step="1">
         </div>
         <div>
           <label for="skill_mix">Cadet skill mix</label>
@@ -176,19 +177,19 @@ a:hover{color:#c4b5fd}
         </div>
         <div class="full">
           <label for="focus">Current focus area / upcoming activity</label>
-          <input type="text" id="focus" placeholder="e.g., SAREX prep next month, encampment promotion drive, DDR week, post-encampment recovery">
+          <input type="text" id="focus" maxlength="500" aria-describedby="privacy-note" placeholder="e.g., SAREX prep next month, encampment promotion drive, DDR week, post-encampment recovery">
         </div>
         <div class="full">
           <label for="extra">Special considerations (optional)</label>
-          <textarea id="extra" placeholder="Anything specific to address: a recent safety incident, upcoming inspection, low cadet retention, new senior member onboarding, etc."></textarea>
+          <textarea id="extra" maxlength="1200" aria-describedby="privacy-note" placeholder="De-identified considerations such as an upcoming inspection, retention trend, or training need."></textarea>
         </div>
       </div>
 
       <button class="primary" id="goBtn" type="button" style="margin-top:14px;">Build agenda</button>
-      <div class="error" id="err"></div>
+      <div class="error" id="err" role="alert" aria-live="assertive" tabindex="-1"></div>
     </div>
 
-    <div class="card" id="out" aria-live="polite">
+    <div class="card" id="out" role="region" aria-live="polite" aria-labelledby="meetingTitle" tabindex="-1">
       <h2 style="display:flex;align-items:center;justify-content:space-between;">
         <span id="meetingTitle">Agenda</span>
         <button type="button" onclick="window.print()" style="font-size:12.5px;padding:6px 14px;background:#fff;color:var(--accent);border:1px solid var(--border);">🖨 Print</button>
@@ -217,7 +218,7 @@ a:hover{color:#c4b5fd}
   d.setDate(d.getDate() + ((9 - d.getDay()) % 7 || 7)); // next Tuesday
   $('date').value = d.toISOString().slice(0, 10);
 
-  function showErr(m) { err.textContent = m; err.classList.add('shown'); }
+  function showErr(m) { err.textContent = m; err.classList.add('shown'); err.focus(); }
   function clearErr() { err.classList.remove('shown'); }
 
   goBtn.onclick = async () => {
@@ -233,6 +234,7 @@ a:hover{color:#c4b5fd}
     };
     if (!payload.date) { showErr('Pick a meeting date.'); return; }
     goBtn.disabled = true;
+    goBtn.setAttribute('aria-busy', 'true');
     goBtn.innerHTML = '<span class="spin"></span>Building agenda…';
     try {
       const r = await fetch('/api/build', {
@@ -244,11 +246,13 @@ a:hover{color:#c4b5fd}
       if (!r.ok) { showErr(j.error || 'Server error.'); return; }
       render(j.agenda || {});
       out.classList.add('shown');
+      out.focus({ preventScroll: true });
       out.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (e) {
       showErr('Network error: ' + (e.message || e));
     } finally {
       goBtn.disabled = false;
+      goBtn.removeAttribute('aria-busy');
       goBtn.textContent = 'Build agenda';
     }
   };

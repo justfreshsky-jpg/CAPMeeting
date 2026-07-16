@@ -3,4 +3,4 @@ Werkzeug==3.1.8
 gunicorn==23.0.0
 requests==2.34.2
 urllib3==2.7.0
-freshsky-common @ git+https://github.com/justfreshsky-jpg/freshsky-common.git@39e8e86448e4fa6522edd916eb4be96f796ec378
+freshsky-common @ git+https://github.com/justfreshsky-jpg/freshsky-common.git@5af659fe988b5a56fe03811a84e22bdda82129c2
