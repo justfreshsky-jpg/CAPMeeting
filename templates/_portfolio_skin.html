@@ -1,0 +1,31 @@
+<style id="fs-portfolio-skin">
+:root{--fs-bg:#f4f7f8;--fs-fg:#102a35;--fs-mute:#536b74;--fs-card:#fff;--fs-border:#d8e3e6;--fs-accent:#087f78;--fs-accent-dark:#05645f;--fs-soft:#e8f5f3;--fs-shadow:0 12px 32px rgba(16,42,53,.08)}
+html{color-scheme:light;background:var(--fs-bg)!important}
+body{background:linear-gradient(180deg,#edf7f5 0,#f8faf9 280px,var(--fs-bg) 620px)!important;color:var(--fs-fg)!important;overflow-wrap:anywhere}
+body::before{display:none!important}
+body,button,input,select,textarea{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+img,svg,video,canvas{max-width:100%}
+.nav,.topbar,nav.fs-nav{background:rgba(255,255,255,.94)!important;border-bottom:1px solid var(--fs-border)!important;color:var(--fs-fg)!important;box-shadow:0 2px 12px rgba(16,42,53,.04)!important}
+.topbar{padding-inline:max(20px,calc((100vw - 1160px)/2))!important}
+.nav a,.topbar a,nav.fs-nav a,.brand,.fs-nav .brand{color:var(--fs-fg)!important}
+.nav a.brand,.topbar a.brand,.brand,.fs-nav .brand{font-weight:750!important;letter-spacing:-.02em}
+header,.hero,.fs-hero{background:transparent!important;color:var(--fs-fg)!important;position:relative}
+header:not(.topbar){width:min(100% - 40px,1160px);margin-inline:auto!important;text-align:left!important}
+header h1,.hero h1,.fs-hero h1{color:var(--fs-fg)!important;background:none!important;-webkit-text-fill-color:currentColor!important;letter-spacing:-.035em}
+header p,.hero p,.fs-hero p,.sub,.hero-desc{color:var(--fs-mute)!important;max-width:760px}
+.pill,.fs-hero-pill,.badge-pill,.hero-pill,.badge{background:var(--fs-soft)!important;color:var(--fs-accent-dark)!important;border:1px solid #bfe2dd!important}
+.card,.tool,.feature-card,.step-card,.landing-section{background:var(--fs-card)!important;border:1px solid var(--fs-border)!important;color:var(--fs-fg)!important;box-shadow:var(--fs-shadow)!important;border-radius:16px!important}
+.card h1,.card h2,.card h3,.tool h2,.tool h3,.feature-card h3,.step-card h3,.section-title{color:var(--fs-fg)!important}
+.muted,.hint,.section-subtitle,.note,.disclaimer,.cta-footnote{color:var(--fs-mute)!important}
+input,textarea,select,.input{background:#fff!important;color:var(--fs-fg)!important;border:1px solid #b9cbd0!important;border-radius:10px!important;min-height:44px}
+textarea{min-height:112px}
+input:focus,textarea:focus,select:focus,.input:focus{outline:3px solid rgba(8,127,120,.22)!important;outline-offset:1px;border-color:var(--fs-accent)!important}
+.btn,.btn-primary,button.primary,.landing-cta,button[type=submit]{min-height:48px;background:var(--fs-accent)!important;color:#fff!important;border:1px solid var(--fs-accent)!important;box-shadow:0 6px 16px rgba(8,127,120,.18)!important;border-radius:10px!important;font-weight:700!important}
+.btn:hover,.btn-primary:hover,button.primary:hover,.landing-cta:hover,button[type=submit]:hover{background:var(--fs-accent-dark)!important;transform:translateY(-1px)}
+.btn:focus-visible,.btn-primary:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid rgba(8,127,120,.3)!important;outline-offset:3px!important}
+.output,.result,.result-box,pre{background:#f8fbfb!important;color:var(--fs-fg)!important;border:1px solid var(--fs-border)!important;border-radius:10px!important}
+footer,.foot,.footer{background:#eef4f4!important;border-top:1px solid var(--fs-border)!important;color:var(--fs-mute)!important}
+footer a,.foot a,.footer a,a{color:var(--fs-accent-dark)}
+@media (max-width:640px){.topbar{padding-inline:16px!important;gap:10px;flex-wrap:wrap}.topbar a,.topbar label,.nav a,.fs-nav a{min-height:44px;display:inline-flex;align-items:center}header:not(.topbar){width:min(100% - 32px,1160px)}.card,.tool,.feature-card,.step-card,.landing-section{border-radius:13px!important}button,.btn,.btn-primary,.landing-cta{max-width:100%}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+</style>
