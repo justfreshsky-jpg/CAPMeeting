@@ -75,7 +75,8 @@ jobs:
 
       - name: Deploy to Cloud Run
         run: |
-          GOOGLE_CLIENT_ID="$(gcloud run services describe freshskyai --region us-central1 --format='value(spec.template.spec.containers[0].env[?name=GOOGLE_CLIENT_ID].value)')"
+          GOOGLE_CLIENT_ID="$(gcloud run services describe freshskyai --region us-central1 --format=json | jq -r '.spec.template.spec.containers[0].env[] | select(.name == "GOOGLE_CLIENT_ID") | .value')"
+          if [[ -z "$GOOGLE_CLIENT_ID" || "$GOOGLE_CLIENT_ID" == "null" ]]; then echo "::error::Shared Google client ID was not found."; exit 1; fi
           gcloud run deploy capmeeting \
             --source . \
             --region us-central1 \
