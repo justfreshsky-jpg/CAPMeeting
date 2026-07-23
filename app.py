@@ -9,7 +9,7 @@ content for each block.
 
 Public-domain content. No PII. No squadron rosters. Each request stateless.
 
-Built by a CAP member as a free volunteer offering for squadron commanders.
+Built by a CAP member as a privacy-first paid offering for squadron commanders.
 """
 import collections
 import datetime as dt
@@ -30,6 +30,8 @@ from freshsky_common.privacy import (
 )
 from freshsky_common.rate_limit import register_global_rate_limits
 from freshsky_common.security import install_security_headers
+from freshsky_common.freemium import register_freemium
+from freshsky_common.hulec import install_hulec
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', os.urandom(32))
@@ -41,6 +43,13 @@ app.config.update(
 
 from freshsky_common.revenue import install_visuals  # noqa: E402
 install_visuals(app)
+register_freemium(
+    app,
+    primary_url=os.environ.get('APP_URL', 'https://capmeeting.freshskyai.com'),
+    community_mode=True,
+    gate_all_post=True,
+)
+install_hulec(app, slug='capmeeting')
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 logger = logging.getLogger('capmeeting')
@@ -437,7 +446,7 @@ _TERMS_HTML = """<!DOCTYPE html>
 <h1>Terms of Use — CAPMeeting</h1>
 <p><em>Last updated 2026-07-16</em></p>
 <h2>What this is</h2>
-<p>CAPMeeting is a free volunteer-built tool offered by Fresh Sky LLC for use by U.S. Civil Air Patrol squadron commanders. No charge. No contract. No license required.</p>
+<p>CAPMeeting is a paid, member-focused tool offered by Fresh Sky LLC for use by U.S. Civil Air Patrol squadron commanders. Three previews are included; continued access is $29.99/month and may be canceled monthly.</p>
 <h2>What this is not</h2>
 <p>CAPMeeting is <strong>not</strong> affiliated with any government agency, military service, or official entity. Output is AI-generated and intended as a draft or study aid only — the human user is responsible for verifying accuracy against authoritative current sources before acting on or filing anything.</p>
 <h2>Use at your own discretion</h2>
