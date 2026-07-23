@@ -39,6 +39,9 @@ app.config.update(
     SESSION_COOKIE_SAMESITE='Lax',
 )
 
+from freshsky_common.revenue import install_visuals  # noqa: E402
+install_visuals(app)
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 logger = logging.getLogger('capmeeting')
 
