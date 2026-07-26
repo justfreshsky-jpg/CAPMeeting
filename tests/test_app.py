@@ -1,10 +1,14 @@
 import copy
 import json
 import logging
+from pathlib import Path
 
 import pytest
 
 import app as application
+
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 VALID_REQUEST = {
@@ -66,6 +70,32 @@ def test_public_routes_and_shared_security_headers(client):
     assert client.get('/health').get_json() == {'status': 'ok'}
     assert client.get('/robots.txt').status_code == 200
     assert client.get('/sitemap.xml').status_code == 200
+
+
+def test_civic_access_unofficial_label_and_sensitive_boundary(client):
+    html = client.get('/').get_data(as_text=True)
+    app_source = (ROOT / 'app.py').read_text()
+    requirements = (ROOT / 'requirements.txt').read_text()
+    workflow = (ROOT / '.github/workflows/deploy.yml').read_text()
+
+    assert 'Unofficial experimental CAP tool' in html
+    assert 'not endorsed by Civil Air Patrol' in html
+    assert '$14.99/month' in html
+    assert '40 usage units/day' in html
+    assert '200/month' in html
+    assert 'does not unlock non-Civic products' in html
+    for phrase in (
+        'rosters',
+        'CAPIDs',
+        'PHI',
+        'incident or case identifiers',
+        'operational secrets',
+    ):
+        assert phrase in html
+    assert "subscription_tier='civic'" in app_source
+    assert "workspace_id='civic'" in app_source
+    assert '05fe2d0a11fd81ee82f16f6270fc061b0fc15b37' in requirements
+    assert 'FRESHSKY_WORKSPACE_ID=civic' in workflow
 
 
 @pytest.mark.parametrize(
@@ -201,6 +231,6 @@ def test_metrics_and_policy_are_private_and_current(client):
     assert metrics.headers['Cache-Control'] == 'private, no-store'
     assert metrics.headers['X-Robots-Tag'].startswith('noindex')
     privacy = client.get('/privacy').get_data(as_text=True)
-    assert 'Last updated 2026-07-16' in privacy
+    assert 'Last updated 2026-07-26' in privacy
     assert 'never meeting context or provider output' in privacy
     assert 'Google Gemini' not in privacy

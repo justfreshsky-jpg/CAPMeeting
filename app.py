@@ -9,7 +9,8 @@ content for each block.
 
 Public-domain content. No PII. No squadron rosters. Each request stateless.
 
-Built by a CAP member as a privacy-first paid offering for squadron commanders.
+Built by a CAP member as an unofficial, experimental, privacy-first paid
+offering for squadron commanders. It is not endorsed by Civil Air Patrol.
 """
 import collections
 import datetime as dt
@@ -48,6 +49,9 @@ register_freemium(
     primary_url=os.environ.get('APP_URL', 'https://capmeeting.freshskyai.com'),
     community_mode=True,
     gate_all_post=True,
+    subscription_tier='civic',
+    subscription_amount_cents=1499,
+    workspace_id='civic',
 )
 install_hulec(app, slug='capmeeting')
 
@@ -424,9 +428,9 @@ _PRIVACY_HTML = """<!DOCTYPE html>
 </head><body>
 <a href="/">← Back to CAPMeeting</a>
 <h1>Privacy Policy — CAPMeeting</h1>
-<p><em>Last updated 2026-07-16</em></p>
+<p><em>Last updated 2026-07-26</em></p>
 <h2>What we collect</h2>
-<p>CAPMeeting is a stateless tool. We do <strong>not</strong> require accounts or store meeting context or generated agendas in an application database. Do not enter names, CAP member IDs, contact details, street addresses, rosters, or sensitive operational information.</p>
+<p>CAPMeeting does not store meeting context or generated agendas in an application database. Three previews do not require an account; continued Civic access uses a verified email for subscription and usage checks. Do not enter names, rosters, CAPIDs or CAP member IDs, contact details, street addresses, PHI or patient information, incident or case identifiers, or operational secrets.</p>
 <h2>What we send to AI providers</h2>
 <p>The de-identified meeting context you submit is sent through FreshSkyAI's privacy-restricted provider chain. A pre-provider filter rejects likely personal identifiers. Provider availability can change without changing this privacy boundary.</p>
 <h2>What gets logged</h2>
@@ -444,13 +448,13 @@ _TERMS_HTML = """<!DOCTYPE html>
 </head><body>
 <a href="/">← Back to CAPMeeting</a>
 <h1>Terms of Use — CAPMeeting</h1>
-<p><em>Last updated 2026-07-16</em></p>
+<p><em>Last updated 2026-07-26</em></p>
 <h2>What this is</h2>
-<p>CAPMeeting is a paid, member-focused tool offered by Fresh Sky LLC for use by U.S. Civil Air Patrol squadron commanders. Three previews are included; continued access is $29.99/month and may be canceled monthly.</p>
+<p>CAPMeeting is an unofficial, experimental CivicOps tool offered by Fresh Sky LLC for use by U.S. Civil Air Patrol squadron commanders. Three previews are included; Civic access is $14.99/month with up to 40 usage units per day and 200 per month. Civic covers CivicOps only and does not unlock non-Civic workspaces. Existing subscribers with an eligible broader entitlement retain access.</p>
 <h2>What this is not</h2>
-<p>CAPMeeting is <strong>not</strong> affiliated with any government agency, military service, or official entity. Output is AI-generated and intended as a draft or study aid only — the human user is responsible for verifying accuracy against authoritative current sources before acting on or filing anything.</p>
+<p>CAPMeeting is <strong>not</strong> affiliated with or endorsed by Civil Air Patrol, CAP NHQ, any government agency, military service, or official entity. Output is AI-generated and intended as a draft or study aid only — the human user is responsible for verifying accuracy against authoritative current sources before acting on or filing anything.</p>
 <h2>Use at your own discretion</h2>
-<p>You agree to use the tool in good faith. Do not submit personally identifying information (PII) about third parties, patient health information (PHI), or classified/sensitive operational details. The tool is not designed to handle such data and we do not warrant against any misuse.</p>
+<p>You agree to use the tool in good faith. Do not submit names, rosters, CAPIDs or CAP member IDs, personally identifying information (PII), patient health information (PHI), incident or case identifiers, exact addresses, classified information, or operational secrets. The tool is not designed to handle such data and we do not warrant against any misuse.</p>
 <h2>No warranty</h2>
 <p>The tool is provided "as is" without warranty of any kind. Fresh Sky LLC disclaims all liability for damages arising from use or misuse of the output.</p>
 <h2>Changes</h2>
