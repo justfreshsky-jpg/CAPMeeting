@@ -94,7 +94,7 @@ def test_civic_access_unofficial_label_and_sensitive_boundary(client):
         assert phrase in html
     assert "subscription_tier='civic'" in app_source
     assert "workspace_id='civic'" in app_source
-    assert '952a3c8cba459b347d385c1e6cff206e07e50142' in requirements
+    assert '219f89f3c5e06c99981335952a1889edc169bb43' in requirements
     assert 'FRESHSKY_WORKSPACE_ID=civic' in workflow
 
 
